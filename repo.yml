@@ -1,0 +1,13 @@
+- hosts: all
+  tasks:
+   - name: "Add repository"
+     yum_repository: 
+        baseurl: "https://download.docker.com/linux/centos/7/x86_64/stable/"
+        description: "EPEL YUM repo"
+        name: epel
+        gpgcheck: 0
+   - name: "Install docker"
+     package:
+            name: "docker"
+            state: "present"
+

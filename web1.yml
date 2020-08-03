@@ -1,0 +1,44 @@
+- hosts: web1
+  vars:
+     - x: 5
+     - y: 10
+     - pname: "httpd"
+   
+  tasks:
+    - package:
+             name: python-pip
+             state: present
+            #ignore_errors: yes
+    - name: Install
+      command: "pip install docker-py"
+    - name: Copy file
+      file:
+        path: /myweb
+        state: directory
+    - copy:
+        src: "index.html"
+        dest: "/myweb/"
+
+    - package:
+             name: docker
+             state: present
+            #ignore_errors: yes
+
+    - service:
+            name: docker
+            state: started
+    - name: pull an image
+      docker_image:
+          name: httpd
+          source: pull
+    - name: create the container
+      docker_container:
+        name: myapplication
+        image: httpd
+        state: started
+        restart: yes
+        exposed_ports: 80
+        ports: "1234:80"
+        volumes: "/myweb/:/usr/local/apache2/htdocs"
+     
+       
